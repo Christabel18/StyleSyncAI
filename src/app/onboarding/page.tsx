@@ -33,13 +33,13 @@ export default function OnboardingPage() {
   return (
     <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
       <div className="mx-auto max-w-2xl text-center">
-        <span className="text-xs font-medium uppercase tracking-widest text-clay">
+        <span className="text-sm font-medium uppercase tracking-widest text-clay">
           Step 1 · Style discovery
         </span>
-        <h1 className="mt-3 text-4xl font-bold tracking-tight text-ink sm:text-5xl">
+        <h1 className="mt-3 text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
           What&apos;s your style?
         </h1>
-        <p className="mt-3 text-ink-soft">
+        <p className="mt-3 text-lg text-ink-soft">
           Choose the aesthetic you want to lean into. Your stylist uses this to
           tailor every recommendation.
         </p>
@@ -57,9 +57,9 @@ export default function OnboardingPage() {
       <div className="sticky bottom-6 z-40 mt-12 flex justify-center">
         <div className="flex items-center gap-4 rounded-full border border-line bg-white/90 px-5 py-3 shadow-lg backdrop-blur">
           {persona ? (
-            <span className="flex items-center gap-2 text-sm text-ink-soft">
+            <span className="flex items-center gap-2 text-base text-ink-soft">
               <span
-                className="flex h-6 w-6 items-center justify-center rounded-full text-xs text-white"
+                className="flex h-7 w-7 items-center justify-center rounded-full text-sm text-white"
                 style={{ background: persona.color }}
               >
                 {persona.emoji}
@@ -68,15 +68,15 @@ export default function OnboardingPage() {
               <strong className="text-ink">{persona.name}</strong>
             </span>
           ) : (
-            <span className="text-sm text-muted">Pick a style to continue</span>
+            <span className="text-base text-muted">Pick a style to continue</span>
           )}
           <button
             onClick={handleContinue}
             disabled={!selectedStyle}
-            className="inline-flex h-10 items-center gap-2 rounded-full bg-ink px-6 text-sm font-semibold text-cream transition-colors hover:bg-clay disabled:cursor-not-allowed disabled:opacity-40"
+            className="inline-flex h-12 items-center gap-2 rounded-full bg-ink px-7 text-base font-semibold text-cream transition-colors hover:bg-clay disabled:cursor-not-allowed disabled:opacity-40"
           >
             Continue
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="h-5 w-5" />
           </button>
         </div>
       </div>

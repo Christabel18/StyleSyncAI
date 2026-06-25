@@ -100,13 +100,13 @@ export default function UploadPage() {
   return (
     <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
       <div className="mx-auto max-w-2xl text-center">
-        <span className="text-xs font-medium uppercase tracking-widest text-clay">
+        <span className="text-sm font-medium uppercase tracking-widest text-clay">
           Step 2 · Outfit upload
         </span>
-        <h1 className="mt-3 text-4xl font-bold tracking-tight text-ink sm:text-5xl">
+        <h1 className="mt-3 text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
           Show me your outfit
         </h1>
-        <p className="mt-3 text-ink-soft">
+        <p className="mt-3 text-lg text-ink-soft">
           Upload a clear, full-length photo and I&apos;ll break down the look.
         </p>
       </div>
@@ -118,33 +118,33 @@ export default function UploadPage() {
           {/* Style chip */}
           <div className="flex items-center justify-between rounded-2xl border border-line bg-white p-4">
             <div>
-              <p className="text-[11px] font-medium uppercase tracking-wider text-muted">
+              <p className="text-xs font-medium uppercase tracking-wider text-muted">
                 Styling as
               </p>
-              <p className="text-lg font-semibold text-ink">
+              <p className="text-xl font-semibold text-ink">
                 {styleMeta?.name ?? "Not set yet"}
               </p>
             </div>
             <Link
               href="/onboarding"
-              className="inline-flex items-center gap-1.5 rounded-full border border-line px-3 py-1.5 text-sm text-ink-soft transition-colors hover:border-clay hover:text-clay"
+              className="inline-flex items-center gap-1.5 rounded-full border border-line px-4 py-2 text-sm text-ink-soft transition-colors hover:border-clay hover:text-clay"
             >
-              <Pencil className="h-3.5 w-3.5" />
+              <Pencil className="h-4 w-4" />
               {selectedStyle ? "Change" : "Set style"}
             </Link>
           </div>
 
           {/* Tips */}
           <div className="rounded-2xl border border-line bg-sand/40 p-5">
-            <h3 className="font-semibold text-ink">Tips for best results</h3>
-            <ul className="mt-3 space-y-2 text-sm text-ink-soft">
+            <h3 className="text-lg font-semibold text-ink">Tips for best results</h3>
+            <ul className="mt-3 space-y-2 text-base text-ink-soft">
               {[
                 "Use natural light and a plain background",
                 "Capture the full outfit, head to toe",
                 "One outfit per photo works best",
               ].map((t) => (
                 <li key={t} className="flex items-start gap-2">
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-clay" />
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-clay" />
                   {t}
                 </li>
               ))}
@@ -154,14 +154,14 @@ export default function UploadPage() {
           <button
             onClick={handleAnalyze}
             disabled={!image}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink py-3 text-sm font-semibold text-cream transition-colors hover:bg-clay disabled:cursor-not-allowed disabled:opacity-40"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink py-3.5 text-base font-semibold text-cream transition-colors hover:bg-clay disabled:cursor-not-allowed disabled:opacity-40"
           >
-            <Sparkles className="h-4 w-4" />
+            <Sparkles className="h-5 w-5" />
             Analyze my outfit
           </button>
 
           {!image && (
-            <p className="text-center text-sm text-muted">
+            <p className="text-center text-base text-muted">
               Add a photo to continue.
             </p>
           )}
