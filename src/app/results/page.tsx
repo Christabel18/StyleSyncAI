@@ -1,75 +1,58 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Sparkles, Clock } from "lucide-react";
-import type { StyleSession } from "@/types";
-import { Container } from "@/components/ui/Container";
-import { Button } from "@/components/ui/Button";
+import { ArrowLeft, Sparkles } from "lucide-react";
 import { ScoreRing } from "@/components/ScoreRing";
 import { AnalysisCard } from "@/components/AnalysisCard";
 import { AssistantMessage } from "@/components/AssistantMessage";
 import { RecommendationList } from "@/components/RecommendationList";
 import { LoadingState } from "@/components/StateViews";
-import { getSession, latestSession } from "@/lib/styleMemory";
-import { getStyle } from "@/lib/styles";
+import { useAppStore } from "@/store/useAppStore";
+import { getStyleMeta, PERSONAS } from "@/lib/styleConfig";
 
 function EmptyResults() {
   return (
-    <Container className="py-20">
-      <div className="mx-auto max-w-md rounded-3xl border border-line bg-card p-10 text-center">
-        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-clay-soft text-clay">
-          <Sparkles className="h-6 w-6" />
-        </span>
-        <h1 className="mt-5 font-display text-2xl font-semibold text-ink">
-          No analysis yet
-        </h1>
-        <p className="mt-2 text-sm text-ink-soft">
-          Upload an outfit and your stylist will break it down here.
-        </p>
-        <Button href="/upload" className="mt-6">
-          Analyze an outfit
-        </Button>
-      </div>
-    </Container>
+    <div className="mx-auto max-w-md px-5 py-20 text-center">
+      <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-clay-soft text-clay">
+        <Sparkles className="h-6 w-6" />
+      </span>
+      <h1 className="mt-5 text-2xl font-bold text-ink">No analysis yet</h1>
+      <p className="mt-2 text-sm text-ink-soft">
+        Upload an outfit and your stylist will break it down here.
+      </p>
+      <Link
+        href="/upload"
+        className="mt-6 inline-flex h-11 items-center gap-2 rounded-full bg-ink px-6 text-sm font-semibold text-cream transition-colors hover:bg-clay"
+      >
+        Analyze an outfit
+      </Link>
+    </div>
   );
 }
 
-function ResultsInner() {
-  const params = useSearchParams();
-  const id = params.get("id");
-  const [session, setSession] = useState<StyleSession | null>(null);
-  const [ready, setReady] = useState(false);
+export default function ResultsPage() {
+  const { currentSession } = useAppStore();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
-  useEffect(() => {
-    const found = (id ? getSession(id) : latestSession()) ?? null;
-    setSession(found);
-    setReady(true);
-  }, [id]);
-
-  if (!ready) {
+  if (!mounted) {
     return (
-      <Container className="py-12">
+      <div className="mx-auto max-w-md px-5 py-12">
         <LoadingState message="Loading your report…" sub="One moment" />
-      </Container>
+      </div>
     );
   }
 
-  if (!session) return <EmptyResults />;
+  if (!currentSession) return <EmptyResults />;
 
-  const { analysis, recommendations, assistant } = session;
-  const style = getStyle(session.preferredStyle);
-  const date = new Date(session.createdAt).toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const { analysis, result, style, imageDataUrl } = currentSession;
+  const styleMeta = getStyleMeta(style);
+  const persona = PERSONAS[result.assistantMessage.assistant];
 
   return (
-    <Container className="py-10 sm:py-14">
+    <div className="mx-auto w-full max-w-6xl px-5 py-10 sm:px-8 sm:py-14">
       <div className="flex items-center justify-between">
         <Link
           href="/history"
@@ -78,18 +61,23 @@ function ResultsInner() {
           <ArrowLeft className="h-4 w-4" />
           Style memory
         </Link>
-        <span className="inline-flex items-center gap-1.5 text-xs text-muted">
-          <Clock className="h-3.5 w-3.5" />
-          {date}
+        <span className="text-xs text-muted">
+          {new Date(currentSession.createdAt).toLocaleString(undefined, {
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
         </span>
       </div>
 
       <div className="mt-4">
-        <span className="text-xs uppercase tracking-widest text-clay">
+        <span className="text-xs font-medium uppercase tracking-widest text-clay">
           Your style report
         </span>
-        <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
-          {style.name} — {analysis.score.overall}
+        <h1 className="mt-2 text-4xl font-bold tracking-tight text-ink sm:text-5xl">
+          {styleMeta.name}{" "}
+          <span className="text-clay">{result.score.overall}</span>
           <span className="text-2xl text-muted">/100</span>
         </h1>
       </div>
@@ -97,10 +85,10 @@ function ResultsInner() {
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         {/* Left: image + analysis */}
         <div className="space-y-6">
-          {session.imageDataUrl && (
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl border border-line bg-card">
+          {imageDataUrl && (
+            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl border border-line bg-white">
               <Image
-                src={session.imageDataUrl}
+                src={imageDataUrl}
                 alt="Your outfit"
                 fill
                 unoptimized
@@ -113,56 +101,64 @@ function ResultsInner() {
 
         {/* Right: scores + assistant + recs */}
         <div className="space-y-6">
-          <div className="rounded-3xl border border-line bg-card p-6 sm:p-8">
-            <h3 className="font-display text-xl text-ink">Outfit score</h3>
-            <div className="mt-4 flex flex-col items-center gap-6 sm:flex-row sm:justify-around">
-              <ScoreRing primary value={analysis.score.overall} label="Overall" />
+          {/* Scores */}
+          <div className="rounded-3xl border border-line bg-white p-6 sm:p-8">
+            <h3 className="text-xl font-semibold text-ink">Outfit score</h3>
+            <div className="mt-6 flex flex-col items-center gap-6 sm:flex-row sm:justify-around">
+              <ScoreRing
+                primary
+                value={result.score.overall}
+                label="Overall"
+                accent={persona.color}
+              />
               <div className="flex gap-6">
                 <ScoreRing
-                  value={analysis.score.styleMatch}
+                  value={result.score.styleMatch}
                   label="Style match"
                   size={104}
+                  accent="#8a8780"
                 />
                 <ScoreRing
-                  value={analysis.score.colorHarmony}
+                  value={result.score.colorHarmony}
                   label="Color harmony"
                   size={104}
+                  accent="#8a8780"
                 />
               </div>
             </div>
-            <p className="mt-6 text-sm leading-relaxed text-ink-soft">
-              {analysis.summary}
-            </p>
+
+            {/* Score breakdown */}
+            {result.score.breakdown.map((b) => (
+              <div key={b.label} className="mt-4 rounded-xl bg-sand/50 p-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-ink">{b.label}</span>
+                  <span className="text-sm font-bold text-clay">{b.score}</span>
+                </div>
+                <p className="mt-1 text-xs text-muted">{b.explanation}</p>
+              </div>
+            ))}
           </div>
 
-          <AssistantMessage message={assistant} />
-          <RecommendationList result={recommendations} />
+          <AssistantMessage message={result.assistantMessage} />
+          <RecommendationList recommendations={result.recommendations} />
         </div>
       </div>
 
       <div className="mt-10 flex flex-wrap justify-center gap-3">
-        <Button href="/upload">
+        <Link
+          href="/upload"
+          className="inline-flex h-11 items-center gap-2 rounded-full bg-ink px-6 text-sm font-semibold text-cream transition-colors hover:bg-clay"
+        >
           <Sparkles className="h-4 w-4" />
           Analyze another
-        </Button>
-        <Button href="/history" variant="outline">
+        </Link>
+        <Link
+          href="/history"
+          className="inline-flex h-11 items-center gap-2 rounded-full border border-line px-6 text-sm font-semibold text-ink transition-colors hover:border-clay hover:text-clay"
+        >
           View style memory
-        </Button>
+        </Link>
       </div>
-    </Container>
-  );
-}
-
-export default function ResultsPage() {
-  return (
-    <Suspense
-      fallback={
-        <Container className="py-12">
-          <LoadingState message="Loading your report…" sub="One moment" />
-        </Container>
-      }
-    >
-      <ResultsInner />
-    </Suspense>
+    </div>
   );
 }

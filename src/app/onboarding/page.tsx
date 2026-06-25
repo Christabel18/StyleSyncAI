@@ -2,37 +2,41 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Shuffle } from "lucide-react";
-import type { StyleId } from "@/types";
-import { Container } from "@/components/ui/Container";
-import { Button } from "@/components/ui/Button";
+import { ArrowRight } from "lucide-react";
+import type { StyleVibe } from "@/types";
 import { StyleSelector } from "@/components/StyleSelector";
-import { InspirationCards } from "@/components/InspirationCards";
-import { loadMemory, setPreferredStyle } from "@/lib/styleMemory";
-import { getStyle } from "@/lib/styles";
+import { useAppStore } from "@/store/useAppStore";
+import { getStyleMeta, PERSONAS } from "@/lib/styleConfig";
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const [selected, setSelected] = useState<StyleId | undefined>();
-  const [showCards, setShowCards] = useState(false);
+  const { selectedStyle, setStyle, setAssistant } = useAppStore();
+  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setSelected(loadMemory().preferredStyle);
-  }, []);
+  useEffect(() => setMounted(true), []);
+
+  function handleSelect(id: StyleVibe) {
+    const meta = getStyleMeta(id);
+    setStyle(id);
+    setAssistant(meta.assistant);
+  }
 
   function handleContinue() {
-    if (!selected) return;
-    setPreferredStyle(selected);
+    if (!selectedStyle) return;
     router.push("/upload");
   }
 
+  const persona = selectedStyle
+    ? PERSONAS[getStyleMeta(selectedStyle).assistant]
+    : null;
+
   return (
-    <Container className="py-12 sm:py-16">
+    <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
       <div className="mx-auto max-w-2xl text-center">
-        <span className="text-xs uppercase tracking-widest text-clay">
+        <span className="text-xs font-medium uppercase tracking-widest text-clay">
           Step 1 · Style discovery
         </span>
-        <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
+        <h1 className="mt-3 text-4xl font-bold tracking-tight text-ink sm:text-5xl">
           What&apos;s your style?
         </h1>
         <p className="mt-3 text-ink-soft">
@@ -42,53 +46,40 @@ export default function OnboardingPage() {
       </div>
 
       <div className="mt-10">
-        <StyleSelector value={selected} onChange={setSelected} />
-      </div>
-
-      {/* Optional swipe enhancement */}
-      <div className="mx-auto mt-12 max-w-xl text-center">
-        <button
-          type="button"
-          onClick={() => setShowCards((v) => !v)}
-          className="inline-flex items-center gap-2 rounded-full border border-line bg-card px-5 py-2.5 text-sm text-ink-soft transition-colors hover:border-clay hover:text-clay"
-        >
-          <Shuffle className="h-4 w-4" />
-          {showCards ? "Hide the looks" : "Not sure? Swipe a few looks"}
-        </button>
-
-        {showCards && (
-          <div className="mt-8">
-            <InspirationCards
-              onComplete={(suggested) => {
-                if (suggested) setSelected(suggested);
-                setShowCards(false);
-              }}
-            />
-          </div>
+        {mounted ? (
+          <StyleSelector value={selectedStyle} onChange={handleSelect} />
+        ) : (
+          <div className="h-64 animate-pulse rounded-3xl bg-sand" />
         )}
       </div>
 
       {/* Sticky continue bar */}
       <div className="sticky bottom-6 z-40 mt-12 flex justify-center">
-        <div className="flex items-center gap-4 rounded-full border border-line bg-card/90 px-5 py-3 shadow-lg backdrop-blur">
-          <span className="text-sm text-ink-soft">
-            {selected ? (
-              <>
-                Selected:{" "}
-                <span className="font-semibold text-ink">
-                  {getStyle(selected).name}
-                </span>
-              </>
-            ) : (
-              "Pick a style to continue"
-            )}
-          </span>
-          <Button onClick={handleContinue} disabled={!selected}>
+        <div className="flex items-center gap-4 rounded-full border border-line bg-white/90 px-5 py-3 shadow-lg backdrop-blur">
+          {persona ? (
+            <span className="flex items-center gap-2 text-sm text-ink-soft">
+              <span
+                className="flex h-6 w-6 items-center justify-center rounded-full text-xs text-white"
+                style={{ background: persona.color }}
+              >
+                {persona.emoji}
+              </span>
+              Styling with{" "}
+              <strong className="text-ink">{persona.name}</strong>
+            </span>
+          ) : (
+            <span className="text-sm text-muted">Pick a style to continue</span>
+          )}
+          <button
+            onClick={handleContinue}
+            disabled={!selectedStyle}
+            className="inline-flex h-10 items-center gap-2 rounded-full bg-ink px-6 text-sm font-semibold text-cream transition-colors hover:bg-clay disabled:cursor-not-allowed disabled:opacity-40"
+          >
             Continue
             <ArrowRight className="h-4 w-4" />
-          </Button>
+          </button>
         </div>
       </div>
-    </Container>
+    </div>
   );
 }

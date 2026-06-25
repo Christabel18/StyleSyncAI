@@ -1,147 +1,109 @@
-/**
- * Shared types for StyleSync AI frontend.
- *
- * The frontend's canonical shapes are `OutfitAnalysis` and `RecommendationResult`.
- * The api layer (src/lib/api.ts) maps the raw backend responses from P2 (/api/analyze)
- * and P3 (/api/recommend) into these shapes, so UI code never depends on the wire format.
- */
+/** Shared types for StyleSync AI — DO NOT CHANGE without P2 + P3 agreement */
 
-/* ---------------------------------- Styles --------------------------------- */
+// ─── Style Preferences ───
 
-export type StyleId =
-  | "streetwear"
+export type StyleVibe =
   | "minimalist"
-  | "old-money"
-  | "business-casual"
-  | "y2k"
-  | "clean-girl"
-  | "casual";
+  | "streetwear"
+  | "classic"
+  | "bohemian"
+  | "sporty"
+  | "preppy"
+  | "edgy"
+  | "romantic";
 
-export interface StyleOption {
-  id: StyleId;
+export type AssistantName = "Nova" | "Ava" | "Ivy";
+
+// ─── Vision Analysis (P2 → P3 contract) ───
+
+export interface OutfitTag {
   name: string;
-  tagline: string;
-  description: string;
-  swatch: string[]; // representative hex colors
-  persona: PersonaId;
+  confidence: number;
+  category: "clothing" | "accessory" | "footwear" | "other";
 }
 
-/* --------------------------------- Personas -------------------------------- */
-
-export type PersonaId = "nova" | "ava" | "ivy";
-
-export interface Persona {
-  id: PersonaId;
+export interface OutfitColor {
   name: string;
-  emoji: string;
-  title: string; // e.g. "Streetwear stylist"
-  blurb: string; // one-line personality description
-  accentVar: string; // css custom property, e.g. "var(--color-nova)"
-  greeting: string;
+  hex: string;
+  dominance: number; // 0-1
 }
 
-/* --------------------------------- Analysis -------------------------------- */
-
-export interface DetectedItems {
-  top?: string;
-  bottom?: string;
-  shoes?: string;
-  outerwear?: string;
-  accessories?: string[];
+export interface AnalyzeResponse {
+  tags: OutfitTag[];
+  colors: OutfitColor[];
+  dominantColor: string;
+  rawTags: string[]; // all Azure Vision tags for debugging
 }
 
-export interface OutfitScore {
-  overall: number; // 0–100
-  styleMatch: number; // 0–100
-  colorHarmony: number; // 0–100
-}
+// ─── Recommendations (P3 output) ───
 
-export interface OutfitAnalysis {
-  items: DetectedItems;
-  colors: string[]; // color names, e.g. ["white", "black"]
-  patterns: string[]; // e.g. ["solid"]
-  styleTags: string[]; // e.g. ["casual", "streetwear"]
-  score: OutfitScore;
-  summary: string; // one-paragraph summary (from P2)
-  confidence: number; // 0–1 (from P2)
+export interface StyleScore {
+  overall: number; // 0-100
+  styleMatch: number; // 0-100 (60% weight)
+  colorHarmony: number; // 0-100 (40% weight)
+  breakdown: {
+    label: string;
+    score: number;
+    explanation: string;
+  }[];
 }
-
-/* ------------------------------ Recommendations ---------------------------- */
 
 export interface Recommendation {
-  id: string;
-  title: string;
+  type: "swap" | "add" | "remove" | "keep";
+  item: string;
   reason: string;
-  confidence: number; // 0–1
-  source: "ai" | "rule";
+  priority: "high" | "medium" | "low";
 }
-
-export interface RecommendationResult {
-  recommendations: Recommendation[];
-  fallbackUsed: boolean;
-}
-
-/* ------------------------------ Assistant message -------------------------- */
 
 export interface AssistantMessage {
-  persona: Persona;
-  greeting: string;
-  body: string;
-  tips: string[];
+  assistant: AssistantName;
+  message: string;
+  tone: string;
 }
 
-/* --------------------------------- Session --------------------------------- */
+export interface RecommendResponse {
+  score: StyleScore;
+  recommendations: Recommendation[];
+  assistantMessage: AssistantMessage;
+}
 
-export interface StyleSession {
+// ─── Request types ───
+
+export interface RecommendRequest {
+  tags: OutfitTag[];
+  colors: OutfitColor[];
+  dominantColor: string;
+  userStyle: StyleVibe;
+  assistant: AssistantName;
+}
+
+// ─── Database models (P4) ───
+
+export interface UserProfile {
   id: string;
-  imageDataUrl?: string;
-  preferredStyle: StyleId;
-  analysis: OutfitAnalysis;
-  recommendations: RecommendationResult;
-  assistant: AssistantMessage;
-  createdAt: string; // ISO
+  style_vibe: StyleVibe;
+  assistant: AssistantName;
+  created_at: string;
+}
+
+export interface OutfitRecord {
+  id: string;
+  user_id: string;
+  image_url?: string;
+  tags: OutfitTag[];
+  colors: OutfitColor[];
+  score: number;
+  recommendations: Recommendation[];
+  assistant_message: string;
+  created_at: string;
 }
 
 export interface StyleMemory {
-  preferredStyle?: StyleId;
-  favoriteColors: string[];
-  commonItems: string[];
-  sessions: StyleSession[];
-}
-
-/* ------------------------- Raw backend wire formats ------------------------ */
-/** P2 — GET/POST /api/analyze response (schema agreed in Phase 1). */
-export interface RawAnalyzeResponse {
-  status: "success" | "error";
-  analysis: {
-    summary: string;
-    insights: string[];
-    confidence: number;
-    tags: string[];
-    // fashion-domain extensions P2 layers on top of the base schema:
-    items?: DetectedItems;
-    colors?: string[];
-    patterns?: string[];
-    style_tags?: string[];
-    score?: {
-      overall_score: number;
-      style_match: number;
-      color_harmony: number;
-    };
-  };
-  model: string;
-  timestamp: string;
-  error?: string;
-}
-
-/** P3 — POST /api/recommend response. */
-export interface RawRecommendResponse {
-  recommendations: Array<{
-    id: string;
-    title: string;
-    reason: string;
-    confidence: number;
-    source: "ai" | "rule";
-  }>;
-  fallback_used: boolean;
+  user_id: string;
+  total_outfits: number;
+  avg_score: number;
+  top_colors: string[];
+  top_items: string[];
+  style_trend: "improving" | "consistent" | "exploring";
+  updated_at: string;
 }

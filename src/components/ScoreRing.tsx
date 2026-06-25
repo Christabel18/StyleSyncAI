@@ -1,57 +1,68 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
-/** Circular progress ring for an individual score (0–100). */
+/** Animated SVG score ring. Transitions from 0 → value on mount. */
 export function ScoreRing({
   value,
   label,
-  size = 132,
+  size = 128,
+  accent = "#b45f45",
   primary = false,
 }: {
   value: number;
   label: string;
   size?: number;
+  accent?: string;
   primary?: boolean;
 }) {
+  const [displayed, setDisplayed] = useState(0);
+  useEffect(() => {
+    const t = setTimeout(() => setDisplayed(value), 60);
+    return () => clearTimeout(t);
+  }, [value]);
+
   const stroke = primary ? 9 : 7;
-  const radius = (size - stroke) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (value / 100) * circumference;
-  const color = primary ? "var(--color-clay)" : "var(--color-ink)";
+  const r = (size - stroke) / 2;
+  const circ = 2 * Math.PI * r;
+  const offset = circ - (displayed / 100) * circ;
 
   return (
-    <div className="flex flex-col items-center gap-3">
+    <div className="flex flex-col items-center gap-2">
       <div className="relative" style={{ width: size, height: size }}>
-        <svg width={size} height={size} className="-rotate-90">
+        <svg
+          width={size}
+          height={size}
+          style={{ transform: "rotate(-90deg)" }}
+          aria-label={`${label}: ${value} out of 100`}
+        >
           <circle
             cx={size / 2}
             cy={size / 2}
-            r={radius}
+            r={r}
             fill="none"
-            stroke="var(--color-line)"
+            stroke="#e4ddd1"
             strokeWidth={stroke}
           />
-          <motion.circle
+          <circle
             cx={size / 2}
             cy={size / 2}
-            r={radius}
+            r={r}
             fill="none"
-            stroke={color}
+            stroke={accent}
             strokeWidth={stroke}
             strokeLinecap="round"
-            strokeDasharray={circumference}
-            initial={{ strokeDashoffset: circumference }}
-            animate={{ strokeDashoffset: offset }}
-            transition={{ duration: 1.1, ease: "easeOut" }}
+            strokeDasharray={circ}
+            strokeDashoffset={offset}
+            style={{ transition: "stroke-dashoffset 1.1s ease" }}
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span
-            className="font-display font-semibold leading-none"
+            className="font-bold leading-none"
             style={{
-              fontSize: primary ? size * 0.32 : size * 0.26,
-              color,
+              fontSize: primary ? size * 0.3 : size * 0.24,
+              color: accent,
             }}
           >
             {value}

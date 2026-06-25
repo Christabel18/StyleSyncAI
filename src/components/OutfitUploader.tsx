@@ -1,14 +1,19 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState, useCallback } from "react";
+import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 import { UploadCloud, X } from "lucide-react";
-import { cn } from "@/lib/cn";
-import {
-  fileToDataUrl,
-  downscaleDataUrl,
-  isAcceptedImage,
-} from "@/lib/image";
+import { cn } from "@/lib/utils";
+
+async function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(new Error("Could not read file"));
+    reader.readAsDataURL(file);
+  });
+}
 
 export function OutfitUploader({
   value,
@@ -17,25 +22,34 @@ export function OutfitUploader({
   value: string | null;
   onChange: (dataUrl: string | null) => void;
 }) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [dragging, setDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function handleFile(file?: File) {
-    setError(null);
-    if (!file) return;
-    if (!isAcceptedImage(file)) {
-      setError("Please choose a JPG, PNG, or WebP image.");
-      return;
-    }
-    const raw = await fileToDataUrl(file);
-    const small = await downscaleDataUrl(raw);
-    onChange(small);
-  }
+  const onDrop = useCallback(
+    async (accepted: File[]) => {
+      setError(null);
+      const file = accepted[0];
+      if (!file) return;
+      try {
+        const dataUrl = await fileToBase64(file);
+        onChange(dataUrl);
+      } catch {
+        setError("Could not read the image. Please try another file.");
+      }
+    },
+    [onChange],
+  );
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: { "image/*": [".jpg", ".jpeg", ".png", ".webp"] },
+    maxFiles: 1,
+    multiple: false,
+    onDropRejected: () => setError("Please drop a JPG, PNG, or WebP image."),
+  });
 
   if (value) {
     return (
-      <div className="relative overflow-hidden rounded-3xl border border-line bg-card">
+      <div className="relative overflow-hidden rounded-3xl border border-line bg-white">
         <div className="relative aspect-[4/5] w-full">
           <Image
             src={value}
@@ -59,45 +73,28 @@ export function OutfitUploader({
 
   return (
     <div>
-      <button
-        type="button"
-        onClick={() => inputRef.current?.click()}
-        onDragOver={(e) => {
-          e.preventDefault();
-          setDragging(true);
-        }}
-        onDragLeave={() => setDragging(false)}
-        onDrop={(e) => {
-          e.preventDefault();
-          setDragging(false);
-          handleFile(e.dataTransfer.files?.[0]);
-        }}
+      <div
+        {...getRootProps()}
         className={cn(
-          "flex aspect-[4/5] w-full flex-col items-center justify-center gap-4 rounded-3xl border-2 border-dashed p-8 text-center transition-colors",
-          dragging
+          "flex aspect-[4/5] cursor-pointer flex-col items-center justify-center gap-4 rounded-3xl border-2 border-dashed p-8 text-center transition-colors",
+          isDragActive
             ? "border-clay bg-clay-soft/50"
-            : "border-line bg-card hover:border-clay/50 hover:bg-clay-soft/20",
+            : "border-line bg-white hover:border-clay/50 hover:bg-clay-soft/20",
         )}
       >
+        <input {...getInputProps()} />
         <span className="flex h-16 w-16 items-center justify-center rounded-full bg-sand text-clay">
           <UploadCloud className="h-7 w-7" />
         </span>
         <div>
-          <p className="font-display text-lg text-ink">Drop your outfit here</p>
+          <p className="text-lg font-semibold text-ink">
+            {isDragActive ? "Drop it here!" : "Drop your outfit here"}
+          </p>
           <p className="mt-1 text-sm text-muted">
             or click to browse · JPG, PNG, WebP
           </p>
         </div>
-      </button>
-
-      <input
-        ref={inputRef}
-        type="file"
-        accept="image/*"
-        className="hidden"
-        onChange={(e) => handleFile(e.target.files?.[0])}
-      />
-
+      </div>
       {error && <p className="mt-3 text-sm text-clay-dark">{error}</p>}
     </div>
   );

@@ -1,46 +1,60 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { Trash2, Sparkles } from "lucide-react";
-import type { StyleMemory } from "@/types";
-import { Container } from "@/components/ui/Container";
-import { Button } from "@/components/ui/Button";
-import { ColorPalette } from "@/components/ColorPalette";
+import { useEffect, useState } from "react";
+import { Sparkles, Trash2 } from "lucide-react";
+import Link from "next/link";
+import type { OutfitRecord } from "@/types";
 import { OutfitHistoryGrid } from "@/components/OutfitHistoryGrid";
-import { loadMemory, clearMemory } from "@/lib/styleMemory";
-import { getStyle } from "@/lib/styles";
+import { useAppStore } from "@/store/useAppStore";
 
-const EMPTY: StyleMemory = {
-  favoriteColors: [],
-  commonItems: [],
-  sessions: [],
-};
+function StatCard({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div className="rounded-3xl border border-line bg-white p-6">
+      <p className="text-[11px] font-medium uppercase tracking-wider text-muted">{label}</p>
+      <div className="mt-2">{value}</div>
+    </div>
+  );
+}
 
 export default function HistoryPage() {
-  const [memory, setMemory] = useState<StyleMemory>(EMPTY);
-  const [ready, setReady] = useState(false);
+  const { history, selectedStyle, clearHistory } = useAppStore();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
-  const refresh = useCallback(() => {
-    setMemory(loadMemory());
-    setReady(true);
-  }, []);
+  const records = mounted ? (history as OutfitRecord[]) : [];
+  const hasData = records.length > 0;
 
-  useEffect(() => {
-    refresh();
-    window.addEventListener("stylesync:memory", refresh);
-    return () => window.removeEventListener("stylesync:memory", refresh);
-  }, [refresh]);
+  const avgScore =
+    records.length > 0
+      ? Math.round(records.reduce((s, r) => s + r.score, 0) / records.length)
+      : null;
 
-  const hasData = ready && memory.sessions.length > 0;
+  const topColors = [
+    ...new Map(
+      records
+        .flatMap((r) => r.colors)
+        .sort((a, b) => b.dominance - a.dominance)
+        .map((c) => [c.name, c]),
+    ).values(),
+  ].slice(0, 6);
+
+  const topItems = [
+    ...new Set(
+      records
+        .flatMap((r) => r.tags)
+        .filter((t) => t.category === "clothing" && t.confidence > 0.75)
+        .map((t) => t.name),
+    ),
+  ].slice(0, 6);
 
   return (
-    <Container className="py-12 sm:py-16">
+    <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <span className="text-xs uppercase tracking-widest text-clay">
+          <span className="text-xs font-medium uppercase tracking-widest text-clay">
             Style memory
           </span>
-          <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
+          <h1 className="mt-2 text-4xl font-bold tracking-tight text-ink sm:text-5xl">
             Your style, remembered
           </h1>
           <p className="mt-3 max-w-lg text-ink-soft">
@@ -50,8 +64,7 @@ export default function HistoryPage() {
         </div>
         {hasData && (
           <button
-            type="button"
-            onClick={clearMemory}
+            onClick={clearHistory}
             className="inline-flex items-center gap-2 rounded-full border border-line px-4 py-2 text-sm text-ink-soft transition-colors hover:border-clay-dark hover:text-clay-dark"
           >
             <Trash2 className="h-4 w-4" />
@@ -61,85 +74,94 @@ export default function HistoryPage() {
       </div>
 
       {!hasData ? (
-        <div className="mt-12 rounded-3xl border border-line bg-card p-12 text-center">
+        <div className="mt-12 rounded-3xl border border-line bg-white p-12 text-center">
           <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-clay-soft text-clay">
             <Sparkles className="h-6 w-6" />
           </span>
-          <h2 className="mt-5 font-display text-2xl font-semibold text-ink">
-            Nothing here yet
-          </h2>
+          <h2 className="mt-5 text-2xl font-bold text-ink">Nothing here yet</h2>
           <p className="mt-2 text-sm text-ink-soft">
             Analyze your first outfit and it&apos;ll start showing up here.
           </p>
-          <Button href="/upload" className="mt-6">
+          <Link
+            href="/upload"
+            className="mt-6 inline-flex h-11 items-center gap-2 rounded-full bg-ink px-6 text-sm font-semibold text-cream transition-colors hover:bg-clay"
+          >
             Analyze an outfit
-          </Button>
+          </Link>
         </div>
       ) : (
         <>
-          {/* Summary */}
           <div className="mt-10 grid gap-5 sm:grid-cols-3">
-            <div className="rounded-3xl border border-line bg-card p-6">
-              <p className="text-[11px] uppercase tracking-wider text-muted">
-                Preferred style
-              </p>
-              <p className="mt-2 font-display text-2xl font-semibold text-ink">
-                {memory.preferredStyle
-                  ? getStyle(memory.preferredStyle).name
-                  : "—"}
-              </p>
-              {memory.preferredStyle && (
-                <p className="mt-1 text-sm text-clay">
-                  {getStyle(memory.preferredStyle).tagline}
-                </p>
-              )}
-            </div>
-
-            <div className="rounded-3xl border border-line bg-card p-6">
-              <p className="text-[11px] uppercase tracking-wider text-muted">
-                Favorite colors
-              </p>
-              <div className="mt-3">
-                <ColorPalette colors={memory.favoriteColors} />
-              </div>
-            </div>
-
-            <div className="rounded-3xl border border-line bg-card p-6">
-              <p className="text-[11px] uppercase tracking-wider text-muted">
-                Common pieces
-              </p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {memory.commonItems.length ? (
-                  memory.commonItems.map((item) => (
-                    <span
-                      key={item}
-                      className="rounded-full bg-sand px-3 py-1 text-sm capitalize text-ink-soft"
-                    >
-                      {item}
-                    </span>
-                  ))
+            <StatCard
+              label="Looks analyzed"
+              value={
+                <p className="text-3xl font-bold text-ink">{records.length}</p>
+              }
+            />
+            <StatCard
+              label="Average score"
+              value={
+                avgScore !== null ? (
+                  <p className="text-3xl font-bold text-clay">{avgScore}/100</p>
                 ) : (
-                  <span className="text-sm text-muted">—</span>
-                )}
-              </div>
-            </div>
+                  <span className="text-muted">—</span>
+                )
+              }
+            />
+            <StatCard
+              label="Go-to pieces"
+              value={
+                <div className="flex flex-wrap gap-2">
+                  {topItems.length ? (
+                    topItems.map((item) => (
+                      <span
+                        key={item}
+                        className="rounded-full bg-sand px-3 py-1 text-sm capitalize text-ink-soft"
+                      >
+                        {item}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-sm text-muted">—</span>
+                  )}
+                </div>
+              }
+            />
           </div>
 
-          {/* History grid */}
-          <div className="mt-12">
-            <h2 className="font-display text-2xl font-semibold text-ink">
-              Outfit history
-            </h2>
+          {topColors.length > 0 && (
+            <div className="mt-6 rounded-3xl border border-line bg-white p-6">
+              <p className="text-[11px] font-medium uppercase tracking-wider text-muted">
+                Favourite colors
+              </p>
+              <div className="mt-3 flex flex-wrap gap-3">
+                {topColors.map((c) => (
+                  <span
+                    key={c.name}
+                    className="inline-flex items-center gap-2 rounded-full border border-line py-1 pl-1 pr-3 text-sm"
+                  >
+                    <span
+                      className="h-6 w-6 rounded-full"
+                      style={{ background: c.hex }}
+                    />
+                    <span className="capitalize text-ink-soft">{c.name}</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="mt-10">
+            <h2 className="text-2xl font-bold text-ink">Outfit history</h2>
             <p className="text-sm text-muted">
-              {memory.sessions.length} look
-              {memory.sessions.length === 1 ? "" : "s"} analyzed
+              {records.length} look{records.length === 1 ? "" : "s"} analyzed
             </p>
             <div className="mt-6">
-              <OutfitHistoryGrid sessions={memory.sessions} />
+              <OutfitHistoryGrid records={records} />
             </div>
           </div>
         </>
       )}
-    </Container>
+    </div>
   );
 }
