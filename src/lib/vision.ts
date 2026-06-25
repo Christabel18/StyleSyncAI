@@ -15,7 +15,7 @@ import type { AnalyzeResponse, OutfitTag, OutfitColor } from "@/types";
 import { colorNameToHex, normalizeHex } from "./colorMap";
 import { classifyTag } from "./taxonomy";
 
-const CONFIDENCE_THRESHOLD = 0.7;
+const CONFIDENCE_THRESHOLD = 0.6;
 const TIMEOUT_MS = 30_000;
 const MAX_RETRIES = 2;
 const RETRY_BASE_DELAY_MS = 500;

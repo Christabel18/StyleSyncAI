@@ -26,6 +26,7 @@ export default function UploadPage() {
   const [mounted, setMounted] = useState(false);
   const [image, setImage] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>("idle");
+  const [errorMessage, setErrorMessage] = useState<string>("We couldn't analyze that outfit. Please try again.");
 
   useEffect(() => setMounted(true), []);
 
@@ -67,7 +68,8 @@ export default function UploadPage() {
       });
 
       router.push("/results");
-    } catch {
+    } catch (e) {
+      setErrorMessage(e instanceof Error ? e.message : "We couldn't analyze that outfit. Please try again.");
       setStatus("error");
     }
   }
@@ -87,7 +89,7 @@ export default function UploadPage() {
       <div className="mx-auto max-w-md px-5 py-12">
         <div className="rounded-3xl border border-line bg-white">
           <ErrorState
-            message="We couldn't analyze that outfit. Please try again."
+            message={errorMessage}
             onRetry={() => setStatus("idle")}
           />
         </div>

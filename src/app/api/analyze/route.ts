@@ -58,10 +58,20 @@ export async function POST(req: Request): Promise<NextResponse> {
     const result = await analyzeImage(image);
     return NextResponse.json<AnalyzeResponse>(result);
   } catch (e) {
-    const code =
-      e instanceof VisionError ? e.code : "unknown";
+    const code = e instanceof VisionError ? e.code : "unknown";
     const message = e instanceof Error ? e.message : String(e);
-    console.error(`[/api/analyze] fallback (${code}): ${message}`);
+    console.error(`[/api/analyze] error (${code}): ${message}`);
+
+    // "no_clothing" means Azure ran fine but found nothing — tell the user to retry
+    // with a better photo rather than returning fake data
+    if (code === "no_clothing") {
+      return NextResponse.json(
+        { error: "No clothing detected. Try a clearer full-body photo with good lighting." },
+        { status: 422 },
+      );
+    }
+
+    // For Azure being down / misconfigured / timed out — use fallback so demo never crashes
     const fallback: AnalyzeResponse = {
       ...FALLBACK_RESPONSE,
       rawTags: [`fallback:${code}`],

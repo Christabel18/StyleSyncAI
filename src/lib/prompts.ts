@@ -17,6 +17,12 @@ export function getFallbackMessage(assistant: AssistantName, score: number, user
   return `Style coherence is below optimal. The primary issue is a mismatch with ${userStyle} preference. Start with footwear — it anchors the entire outfit direction.`;
 }
 
+export function getAssistantTone(assistant: AssistantName): string {
+  if (assistant === "Nova") return "encouraging";
+  if (assistant === "Ava") return "bold";
+  return "analytical";
+}
+
 export function getSystemPrompt(assistant: AssistantName): string {
   const prompts: Record<AssistantName, string> = {
     Nova: "You are Nova, a warm encouraging AI fashion assistant. Start with praise, be casual and friendly, suggest exactly ONE actionable improvement. Keep responses under 120 tokens.",
