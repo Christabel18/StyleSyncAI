@@ -32,15 +32,6 @@ export function getSystemPrompt(assistant: AssistantName): string {
   return prompts[assistant];
 }
 
-export function getAssistantTone(assistant: AssistantName): string {
-  const tones: Record<AssistantName, string> = {
-    Nova: "encouraging",
-    Ava: "bold",
-    Ivy: "analytical",
-  };
-  return tones[assistant];
-}
-
 export function buildUserMessage(tags: string[], colors: string[], score: number, userStyle: StyleVibe): string {
   return [
     "Analyze this outfit:",

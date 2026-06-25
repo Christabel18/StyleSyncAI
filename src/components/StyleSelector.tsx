@@ -5,20 +5,20 @@ import type { StyleVibe } from "@/types";
 import { STYLES } from "@/lib/styleConfig";
 import { cn } from "@/lib/utils";
 
-const STYLE_EMOJIS: Record<StyleVibe, string> = {
-  streetwear: "🔥", minimalist: "🤍", classic: "✨", bohemian: "🌿",
-  sporty: "⚡", preppy: "🎀", edgy: "🖤", romantic: "🌸",
-};
-
+// These are fallbacks — StyleSelector now reads emoji/gradient from styleConfig.ts
+// (Each StyleMeta has .emoji and .swatch built-in, so these maps aren't needed anymore.)
+// Keeping small maps only for the gradient override used in selected-card bg.
 const GRADIENT_MAP: Record<StyleVibe, string> = {
   streetwear: "from-[#5b61e8] to-[#9b5de5]",
   minimalist: "from-[#8a8780] to-[#c9c2b4]",
   classic: "from-[#2f5e4e] to-[#000080]",
-  bohemian: "from-[#8B4513] to-[#c8a26b]",
+  edgy: "from-[#1a1a1a] to-[#b45f45]",
   sporty: "from-[#00bbf9] to-[#00f5d4]",
   preppy: "from-[#000080] to-[#7c8a72]",
-  edgy: "from-[#1a1a1a] to-[#b45f45]",
-  romantic: "from-[#f15bb5] to-[#fee440]",
+  bohemian: "from-[#8B4513] to-[#c8a26b]",
+  business: "from-[#26303a] to-[#E8DCC8]",
+  "avant-garde": "from-[#9b5de5] to-[#f15bb5]",
+  "casual-cool": "from-[#6b8fb0] to-[#1b1a17]",
 };
 
 export function StyleSelector({
@@ -57,7 +57,7 @@ export function StyleSelector({
               {/* Big emoji */}
               <div className="mb-3 flex items-center justify-between">
                 <span className="text-4xl transition-transform group-hover:scale-110">
-                  {STYLE_EMOJIS[style.id]}
+                  {style.emoji}
                 </span>
                 <span
                   className={cn(

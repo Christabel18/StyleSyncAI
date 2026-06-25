@@ -19,7 +19,8 @@ const FEATURES = [
 
 const STYLE_EMOJIS: Record<string, string> = {
   streetwear: "🔥", minimalist: "🤍", classic: "✨", bohemian: "🌿",
-  sporty: "⚡", preppy: "🎀", edgy: "🖤", romantic: "🌸",
+  sporty: "⚡", preppy: "🎀", edgy: "🖤", business: "💼",
+  "avant-garde": "🎭", "casual-cool": "😎",
 };
 
 export default function Home() {
@@ -43,9 +44,11 @@ export default function Home() {
             </span>
 
             <h1 className="mt-6 text-6xl font-semibold leading-[1.05] tracking-tight text-ink sm:text-7xl">
-              Dress like the{" "}
-              <span className="gradient-text">best version</span>{" "}
-              of you.
+              <span aria-label="Dress like the best version of you.">
+                Dress like the{" "}
+                <span className="gradient-text" aria-hidden="true">best version</span>{" "}
+                of you.
+              </span>
             </h1>
 
             <p className="mt-6 max-w-md text-xl leading-relaxed text-ink-soft">

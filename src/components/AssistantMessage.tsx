@@ -67,10 +67,13 @@ export function AssistantMessage({ message }: { message: AssistantMessageType })
       <div
         className="flex items-center gap-3 px-5 py-4"
         style={{ background: persona.bg }}
+        role="heading"
+        aria-level={3}
       >
         <div
           className="flex h-3 w-3 animate-pulse rounded-full"
           style={{ background: persona.color }}
+          aria-hidden="true"
         />
         <span className="text-sm font-semibold text-ink">{persona.name}</span>
         <span className="text-xs text-muted">{persona.title}</span>
@@ -79,8 +82,8 @@ export function AssistantMessage({ message }: { message: AssistantMessageType })
         </span>
       </div>
 
-      {/* Chat area */}
-      <div className="p-5">
+      {/* Chat area — aria-live so screen readers announce new bubbles */}
+      <div className="p-5" aria-live="polite" aria-label={`Message from ${persona.name}: ${message.message}`}>
         <div className="flex items-end gap-4">
           {/* Bitmoji avatar */}
           <div className="shrink-0">

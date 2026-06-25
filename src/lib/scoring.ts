@@ -5,14 +5,16 @@
 import type { OutfitTag, OutfitColor, StyleVibe, StyleScore } from "@/types";
 
 const STYLE_ITEMS: Record<StyleVibe, string[]> = {
-  minimalist: ["blazer", "trousers", "sneakers", "t-shirt", "coat", "jeans", "white", "black", "neutral"],
-  streetwear: ["hoodie", "sneakers", "cap", "joggers", "t-shirt", "jacket", "backpack", "graphic"],
-  classic: ["blazer", "shirt", "dress", "loafers", "trousers", "belt", "watch", "heels"],
-  bohemian: ["dress", "skirt", "sandals", "scarf", "hat", "jewelry", "floral", "fringe"],
-  sporty: ["sneakers", "leggings", "hoodie", "tank", "shorts", "cap", "athletic", "running"],
-  preppy: ["polo", "chinos", "loafers", "blazer", "sweater", "belt", "oxford", "vest"],
-  edgy: ["leather", "boots", "jacket", "black", "chains", "ripped", "denim", "studs"],
-  romantic: ["dress", "blouse", "skirt", "heels", "lace", "floral", "pastel", "pearl"],
+  streetwear: ["hoodie", "sneakers", "cap", "joggers", "t-shirt", "jacket", "backpack", "graphic", "cargo", "oversized"],
+  minimalist: ["blazer", "trousers", "sneakers", "t-shirt", "coat", "jeans", "white", "black", "neutral", "clean"],
+  classic: ["blazer", "shirt", "loafers", "trousers", "belt", "watch", "oxford", "trench", "chinos"],
+  edgy: ["leather", "boots", "jacket", "black", "chains", "ripped", "denim", "studs", "moto", "harness"],
+  sporty: ["sneakers", "leggings", "hoodie", "tank", "shorts", "cap", "athletic", "tracksuit", "jersey"],
+  preppy: ["polo", "chinos", "loafers", "blazer", "sweater", "belt", "oxford", "vest", "plaid", "gingham"],
+  bohemian: ["linen", "sandals", "scarf", "hat", "jewelry", "floral", "fringe", "flowy", "earthy", "layers"],
+  business: ["suit", "blazer", "shirt", "trousers", "heels", "oxfords", "tie", "briefcase", "structured", "formal"],
+  "avant-garde": ["oversized", "asymmetric", "experimental", "layered", "unconventional", "sculptural", "statement"],
+  "casual-cool": ["jeans", "tee", "sneakers", "denim", "jacket", "hoodie", "relaxed", "everyday", "simple"],
 };
 
 const HARMONIOUS_PAIRS: [string, string][] = [
