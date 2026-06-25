@@ -92,10 +92,54 @@ src/
 │   ├── scoring.ts                ← P3 owns (Score algorithm)
 │   ├── prompts.ts                ← P3 owns (AI assistant prompts)
 │   └── supabase.ts               ← P4 owns (DB client)
+├── store/                        ← P1 owns (see "P1 Setup Tasks" below)
 ├── types/
 │   └── index.ts                  ← SHARED — all types live here
 └── fixtures/                     ← Demo/test data (anyone can add)
 ```
+
+---
+
+## P1 Setup Tasks (Frontend Lead — do these first)
+
+These are things P1 should set up before building pages:
+
+### 1. Initialize shadcn/ui
+
+```bash
+npx shadcn-ui@latest init
+# Recommended: New York style, Slate color, CSS variables = yes
+npx shadcn-ui@latest add button card input label skeleton
+```
+
+### 2. Create the Zustand store (`src/store/index.ts`)
+
+Zustand is already installed. P1 needs to create the global store that passes data between pages. Suggested shape:
+
+```typescript
+import { create } from "zustand";
+import type { StyleVibe, AssistantName, AnalyzeResponse, RecommendResponse } from "@/types";
+
+interface StyleSyncStore {
+  // Onboarding
+  userStyle: StyleVibe | null;
+  assistant: AssistantName | null;
+  setOnboarding: (style: StyleVibe, assistant: AssistantName) => void;
+
+  // Analysis (from P2)
+  analysisResult: AnalyzeResponse | null;
+  setAnalysisResult: (result: AnalyzeResponse) => void;
+
+  // Recommendations (from P3)
+  recommendResult: RecommendResponse | null;
+  setRecommendResult: (result: RecommendResponse) => void;
+
+  // Reset
+  reset: () => void;
+}
+```
+
+This store connects the data flow: **Onboarding → Upload → Results**. P1 owns the implementation — the types above are already defined in `src/types/index.ts`.
 
 ---
 
