@@ -63,6 +63,6 @@ src/
 ## Team
 
 - P1 (Frontend) — @
-- P2 (Vision) — @anjolatop
+- P2 (Vision) — @
 - P3 (Recs) — @Christabel18
 - P4 (Backend + Pitch) — @
