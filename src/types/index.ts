@@ -3,14 +3,16 @@
 // ─── Style Preferences ───
 
 export type StyleVibe =
-  | "minimalist"
   | "streetwear"
+  | "minimalist"
   | "classic"
-  | "bohemian"
+  | "edgy"
   | "sporty"
   | "preppy"
-  | "edgy"
-  | "romantic";
+  | "bohemian"
+  | "business"
+  | "avant-garde"
+  | "casual-cool";
 
 export type AssistantName = "Nova" | "Ava" | "Ivy";
 

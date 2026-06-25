@@ -56,12 +56,12 @@ export default function ResultsPage() {
       <div className="flex items-center justify-between">
         <Link
           href="/history"
-          className="inline-flex items-center gap-2 text-sm text-ink-soft transition-colors hover:text-clay"
+          className="inline-flex items-center gap-2 text-base text-ink-soft transition-colors hover:text-clay"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-5 w-5" />
           Style memory
         </Link>
-        <span className="text-xs text-muted">
+        <span className="text-sm text-muted">
           {new Date(currentSession.createdAt).toLocaleString(undefined, {
             month: "short",
             day: "numeric",
@@ -72,10 +72,10 @@ export default function ResultsPage() {
       </div>
 
       <div className="mt-4">
-        <span className="text-xs font-medium uppercase tracking-widest text-clay">
+        <span className="text-sm font-medium uppercase tracking-widest text-clay">
           Your style report
         </span>
-        <h1 className="mt-2 text-4xl font-bold tracking-tight text-ink sm:text-5xl">
+        <h1 className="mt-2 text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
           {styleMeta.name}{" "}
           <span className="text-clay">{result.score.overall}</span>
           <span className="text-2xl text-muted">/100</span>
@@ -140,21 +140,21 @@ export default function ResultsPage() {
           </div>
 
           <AssistantMessage message={result.assistantMessage} />
-          <RecommendationList recommendations={result.recommendations} />
+          <RecommendationList recommendations={result.recommendations} assistant={result.assistantMessage.assistant} />
         </div>
       </div>
 
       <div className="mt-10 flex flex-wrap justify-center gap-3">
         <Link
           href="/upload"
-          className="inline-flex h-11 items-center gap-2 rounded-full bg-ink px-6 text-sm font-semibold text-cream transition-colors hover:bg-clay"
+          className="inline-flex h-12 items-center gap-2 rounded-full bg-ink px-7 text-base font-semibold text-cream transition-colors hover:bg-clay"
         >
-          <Sparkles className="h-4 w-4" />
+          <Sparkles className="h-5 w-5" />
           Analyze another
         </Link>
         <Link
           href="/history"
-          className="inline-flex h-11 items-center gap-2 rounded-full border border-line px-6 text-sm font-semibold text-ink transition-colors hover:border-clay hover:text-clay"
+          className="inline-flex h-12 items-center gap-2 rounded-full border border-line px-7 text-base font-semibold text-ink transition-colors hover:border-clay hover:text-clay"
         >
           View style memory
         </Link>

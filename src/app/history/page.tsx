@@ -17,7 +17,7 @@ function StatCard({ label, value }: { label: string; value: React.ReactNode }) {
 }
 
 export default function HistoryPage() {
-  const { history, selectedStyle, clearHistory } = useAppStore();
+  const { history, clearHistory } = useAppStore();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
@@ -29,35 +29,35 @@ export default function HistoryPage() {
       ? Math.round(records.reduce((s, r) => s + r.score, 0) / records.length)
       : null;
 
-  const topColors = [
-    ...new Map(
+  const topColors = Array.from(
+    new Map(
       records
         .flatMap((r) => r.colors)
         .sort((a, b) => b.dominance - a.dominance)
-        .map((c) => [c.name, c]),
+        .map((c) => [c.name, c] as [string, typeof c]),
     ).values(),
-  ].slice(0, 6);
+  ).slice(0, 6);
 
-  const topItems = [
-    ...new Set(
+  const topItems = Array.from(
+    new Set(
       records
         .flatMap((r) => r.tags)
         .filter((t) => t.category === "clothing" && t.confidence > 0.75)
         .map((t) => t.name),
     ),
-  ].slice(0, 6);
+  ).slice(0, 6);
 
   return (
     <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <span className="text-xs font-medium uppercase tracking-widest text-clay">
+          <span className="text-sm font-medium uppercase tracking-widest text-clay">
             Style memory
           </span>
-          <h1 className="mt-2 text-4xl font-bold tracking-tight text-ink sm:text-5xl">
+          <h1 className="mt-2 text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
             Your style, remembered
           </h1>
-          <p className="mt-3 max-w-lg text-ink-soft">
+          <p className="mt-3 max-w-lg text-lg text-ink-soft">
             Every look you analyze sharpens your stylist&apos;s sense of your
             taste — your colors, your go-to pieces, your vibe.
           </p>
@@ -65,9 +65,9 @@ export default function HistoryPage() {
         {hasData && (
           <button
             onClick={clearHistory}
-            className="inline-flex items-center gap-2 rounded-full border border-line px-4 py-2 text-sm text-ink-soft transition-colors hover:border-clay-dark hover:text-clay-dark"
+            className="inline-flex items-center gap-2 rounded-full border border-line px-4 py-2.5 text-base text-ink-soft transition-colors hover:border-clay-dark hover:text-clay-dark"
           >
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className="h-5 w-5" />
             Clear
           </button>
         )}
