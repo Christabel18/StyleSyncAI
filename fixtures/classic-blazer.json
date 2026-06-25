@@ -1,0 +1,23 @@
+{
+  "name": "Classic Blazer Look",
+  "description": "A polished classic outfit — blazer, chinos, loafers. High style match for 'classic' vibe.",
+  "request": {
+    "tags": [
+      { "name": "blazer", "confidence": 0.95, "category": "clothing" },
+      { "name": "chinos", "confidence": 0.90, "category": "clothing" },
+      { "name": "loafers", "confidence": 0.88, "category": "footwear" },
+      { "name": "watch", "confidence": 0.82, "category": "accessory" },
+      { "name": "belt", "confidence": 0.80, "category": "accessory" }
+    ],
+    "colors": [
+      { "name": "navy", "hex": "#000080", "dominance": 0.4 },
+      { "name": "beige", "hex": "#F5F5DC", "dominance": 0.35 },
+      { "name": "brown", "hex": "#8B4513", "dominance": 0.25 }
+    ],
+    "dominantColor": "navy",
+    "userStyle": "classic",
+    "assistant": "Ivy"
+  },
+  "expectedScoreRange": { "min": 85, "max": 100 },
+  "notes": "Should score very high — all items are core classic pieces with harmonious earth tones."
+}

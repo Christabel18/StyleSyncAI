@@ -1,0 +1,22 @@
+{
+  "name": "Edgy Night Out",
+  "description": "Full edgy aesthetic — leather, boots, black. Perfect score territory.",
+  "request": {
+    "tags": [
+      { "name": "leather jacket", "confidence": 0.96, "category": "clothing" },
+      { "name": "black jeans", "confidence": 0.91, "category": "clothing" },
+      { "name": "boots", "confidence": 0.93, "category": "footwear" },
+      { "name": "chains", "confidence": 0.80, "category": "accessory" }
+    ],
+    "colors": [
+      { "name": "black", "hex": "#000000", "dominance": 0.7 },
+      { "name": "silver", "hex": "#C0C0C0", "dominance": 0.2 },
+      { "name": "red", "hex": "#8B0000", "dominance": 0.1 }
+    ],
+    "dominantColor": "black",
+    "userStyle": "edgy",
+    "assistant": "Ava"
+  },
+  "expectedScoreRange": { "min": 90, "max": 100 },
+  "notes": "Peak edgy — every item matches. Black-dominant palette with metallic accent. Demo showstopper."
+}

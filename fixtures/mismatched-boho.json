@@ -1,0 +1,21 @@
+{
+  "name": "Mismatched Bohemian Attempt",
+  "description": "User says bohemian, but the outfit is sporty. Tests the scoring engine's ability to detect style mismatch.",
+  "request": {
+    "tags": [
+      { "name": "tank top", "confidence": 0.90, "category": "clothing" },
+      { "name": "leggings", "confidence": 0.92, "category": "clothing" },
+      { "name": "running shoes", "confidence": 0.88, "category": "footwear" }
+    ],
+    "colors": [
+      { "name": "pink", "hex": "#FF69B4", "dominance": 0.4 },
+      { "name": "gray", "hex": "#808080", "dominance": 0.4 },
+      { "name": "white", "hex": "#FFFFFF", "dominance": 0.2 }
+    ],
+    "dominantColor": "pink",
+    "userStyle": "bohemian",
+    "assistant": "Ava"
+  },
+  "expectedScoreRange": { "min": 30, "max": 55 },
+  "notes": "Sporty outfit scored against bohemian. Low style match expected. Ava should push the user to commit to a direction."
+}
