@@ -20,11 +20,22 @@ export async function analyzeOutfit(
 ): Promise<AnalyzeResponse> {
   if (MOCK_MODE) return mockAnalyze(style);
 
+  if (!imageBase64) throw new Error("No image provided");
+
+  // Convert base64 data URL → Blob → FormData (route expects multipart/form-data)
+  const res64 = await fetch(imageBase64);
+  const blob = await res64.blob();
+  const formData = new FormData();
+  formData.append("image", blob, "outfit.jpg");
+
   const res = await fetch("/api/analyze", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ imageBase64 }),
+    body: formData,
   });
+  if (res.status === 422) {
+    const data = await res.json();
+    throw new Error(data.error ?? "No clothing detected. Try a clearer photo.");
+  }
   if (!res.ok) throw new Error(`Analyze failed (${res.status})`);
   return res.json() as Promise<AnalyzeResponse>;
 }

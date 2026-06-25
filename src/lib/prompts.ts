@@ -19,6 +19,12 @@ export function getFallbackMessage(assistant: AssistantName, score: number, user
   return `Analysis: style coherence is below optimal. The primary issue is a mismatch between your stated ${userStyle} preference and the actual garment selection. Start with footwear — it anchors the entire outfit.`;
 }
 
+export function getAssistantTone(assistant: AssistantName): string {
+  if (assistant === "Nova") return "encouraging";
+  if (assistant === "Ava") return "bold";
+  return "analytical";
+}
+
 export function getSystemPrompt(assistant: AssistantName): string {
   return `You are ${assistant}, an AI fashion stylist.`;
 }
