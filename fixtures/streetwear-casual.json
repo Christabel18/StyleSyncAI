@@ -1,0 +1,23 @@
+{
+  "name": "Streetwear Casual",
+  "description": "A relaxed streetwear fit — hoodie, joggers, sneakers. Should score well for 'streetwear'.",
+  "request": {
+    "tags": [
+      { "name": "hoodie", "confidence": 0.94, "category": "clothing" },
+      { "name": "joggers", "confidence": 0.91, "category": "clothing" },
+      { "name": "sneakers", "confidence": 0.93, "category": "footwear" },
+      { "name": "cap", "confidence": 0.85, "category": "accessory" },
+      { "name": "backpack", "confidence": 0.78, "category": "accessory" }
+    ],
+    "colors": [
+      { "name": "black", "hex": "#000000", "dominance": 0.5 },
+      { "name": "white", "hex": "#FFFFFF", "dominance": 0.3 },
+      { "name": "red", "hex": "#FF0000", "dominance": 0.2 }
+    ],
+    "dominantColor": "black",
+    "userStyle": "streetwear",
+    "assistant": "Nova"
+  },
+  "expectedScoreRange": { "min": 80, "max": 100 },
+  "notes": "Core streetwear items. Black/white is always harmonious. Red accent adds edge."
+}

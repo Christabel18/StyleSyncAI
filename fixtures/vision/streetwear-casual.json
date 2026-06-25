@@ -1,0 +1,53 @@
+{
+  "name": "Streetwear Casual",
+  "imageHint": "Person in black hoodie, joggers, white sneakers, red cap, backpack — urban background",
+  "pairsWith": "fixtures/streetwear-casual.json",
+  "azureRaw": {
+    "tags": [
+      { "name": "person", "confidence": 0.99 },
+      { "name": "clothing", "confidence": 0.98 },
+      { "name": "hoodie", "confidence": 0.94 },
+      { "name": "joggers", "confidence": 0.91 },
+      { "name": "sneakers", "confidence": 0.93 },
+      { "name": "cap", "confidence": 0.85 },
+      { "name": "backpack", "confidence": 0.78 },
+      { "name": "outdoor", "confidence": 0.88 },
+      { "name": "standing", "confidence": 0.82 },
+      { "name": "young", "confidence": 0.71 }
+    ],
+    "objects": [
+      { "object": "hoodie", "confidence": 0.95 },
+      { "object": "sneakers", "confidence": 0.94 }
+    ],
+    "description": {
+      "tags": ["person", "outdoor", "clothing", "hoodie", "street"],
+      "captions": [
+        { "text": "a person wearing a black hoodie and joggers standing outdoors", "confidence": 0.86 }
+      ]
+    },
+    "color": {
+      "dominantColors": ["Black", "White"],
+      "dominantColorForeground": "Black",
+      "dominantColorBackground": "White",
+      "accentColor": "C8302F",
+      "isBwImg": false
+    }
+  },
+  "response": {
+    "tags": [
+      { "name": "hoodie", "confidence": 0.95, "category": "clothing" },
+      { "name": "sneakers", "confidence": 0.94, "category": "footwear" },
+      { "name": "joggers", "confidence": 0.91, "category": "clothing" },
+      { "name": "cap", "confidence": 0.85, "category": "accessory" },
+      { "name": "backpack", "confidence": 0.78, "category": "accessory" }
+    ],
+    "colors": [
+      { "name": "black", "hex": "#000000", "dominance": 0.45 },
+      { "name": "white", "hex": "#FFFFFF", "dominance": 0.45 },
+      { "name": "accent", "hex": "#C8302F", "dominance": 0.1 }
+    ],
+    "dominantColor": "black",
+    "rawTags": ["person", "clothing", "hoodie", "joggers", "sneakers", "cap", "backpack", "outdoor", "standing", "young", "person", "outdoor", "clothing", "hoodie", "street"]
+  },
+  "notes": "Demonstrates filtering of person/outdoor/standing/young noise tags. Red accent (C8302F) from cap. Black+white balanced palette."
+}

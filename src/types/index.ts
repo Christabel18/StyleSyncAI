@@ -1,4 +1,4 @@
-/** Shared types for StyleSync AI — DO NOT CHANGE without P2 + P3 agreement */
+/** Shared types for StyleSync AI */
 
 // ─── Style Preferences ───
 
@@ -25,7 +25,7 @@ export interface OutfitTag {
 export interface OutfitColor {
   name: string;
   hex: string;
-  dominance: number; // 0-1
+  dominance: number; // 0-1, how dominant this color is
 }
 
 export interface AnalyzeResponse {
@@ -58,7 +58,7 @@ export interface Recommendation {
 export interface AssistantMessage {
   assistant: AssistantName;
   message: string;
-  tone: string;
+  tone: string; // e.g., "encouraging", "bold", "analytical"
 }
 
 export interface RecommendResponse {

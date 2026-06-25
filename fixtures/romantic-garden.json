@@ -1,0 +1,22 @@
+{
+  "name": "Romantic Garden Party",
+  "description": "Soft romantic outfit — dress, heels, florals. Tests the romantic vibe + pastel color harmony.",
+  "request": {
+    "tags": [
+      { "name": "dress", "confidence": 0.94, "category": "clothing" },
+      { "name": "heels", "confidence": 0.89, "category": "footwear" },
+      { "name": "pearl necklace", "confidence": 0.82, "category": "accessory" },
+      { "name": "floral pattern", "confidence": 0.76, "category": "other" }
+    ],
+    "colors": [
+      { "name": "pink", "hex": "#FFB6C1", "dominance": 0.45 },
+      { "name": "cream", "hex": "#FFFDD0", "dominance": 0.35 },
+      { "name": "gold", "hex": "#FFD700", "dominance": 0.2 }
+    ],
+    "dominantColor": "pink",
+    "userStyle": "romantic",
+    "assistant": "Nova"
+  },
+  "expectedScoreRange": { "min": 75, "max": 100 },
+  "notes": "Strong romantic match — dress, heels, pearls, floral. Soft pastel palette. Nova should be enthusiastic."
+}

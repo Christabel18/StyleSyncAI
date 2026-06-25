@@ -1,6 +1,7 @@
-/** Supabase client — P4 owns this.
- *  Local stub — the real file lives in src/lib/supabase.ts on the team's repo.
+/** Supabase client
+ *  P4 owns this — set up after Supabase project is created
  */
+
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
