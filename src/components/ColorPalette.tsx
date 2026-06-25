@@ -7,11 +7,6 @@ export function ColorPalette({ colors }: { colors: OutfitColor[] }) {
   return (
     <div className="flex flex-wrap gap-2">
       {colors.map((c) => {
-        const luminance =
-          parseInt(c.hex.slice(1, 3), 16) * 0.299 +
-          parseInt(c.hex.slice(3, 5), 16) * 0.587 +
-          parseInt(c.hex.slice(5, 7), 16) * 0.114;
-        const textColor = luminance > 140 ? "#1b1a17" : "#ffffff";
         return (
           <span
             key={c.name}

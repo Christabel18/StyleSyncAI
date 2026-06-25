@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Image from "next/image";
 import type { OutfitRecord } from "@/types";
 import { getStyleMeta } from "@/lib/styleConfig";

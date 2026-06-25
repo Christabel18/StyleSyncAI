@@ -17,7 +17,7 @@ function StatCard({ label, value }: { label: string; value: React.ReactNode }) {
 }
 
 export default function HistoryPage() {
-  const { history, selectedStyle, clearHistory } = useAppStore();
+  const { history, clearHistory } = useAppStore();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
@@ -29,23 +29,23 @@ export default function HistoryPage() {
       ? Math.round(records.reduce((s, r) => s + r.score, 0) / records.length)
       : null;
 
-  const topColors = [
-    ...new Map(
+  const topColors = Array.from(
+    new Map(
       records
         .flatMap((r) => r.colors)
         .sort((a, b) => b.dominance - a.dominance)
-        .map((c) => [c.name, c]),
+        .map((c) => [c.name, c] as [string, typeof c]),
     ).values(),
-  ].slice(0, 6);
+  ).slice(0, 6);
 
-  const topItems = [
-    ...new Set(
+  const topItems = Array.from(
+    new Set(
       records
         .flatMap((r) => r.tags)
         .filter((t) => t.category === "clothing" && t.confidence > 0.75)
         .map((t) => t.name),
     ),
-  ].slice(0, 6);
+  ).slice(0, 6);
 
   return (
     <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8 sm:py-16">

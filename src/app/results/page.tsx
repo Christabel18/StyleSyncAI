@@ -140,7 +140,7 @@ export default function ResultsPage() {
           </div>
 
           <AssistantMessage message={result.assistantMessage} />
-          <RecommendationList recommendations={result.recommendations} />
+          <RecommendationList recommendations={result.recommendations} assistant={result.assistantMessage.assistant} />
         </div>
       </div>
 
