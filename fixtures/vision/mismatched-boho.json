@@ -1,0 +1,51 @@
+{
+  "name": "Mismatched Bohemian Attempt",
+  "imageHint": "Person in pink tank top, gray leggings, white running shoes — gym/workout setting (user claims bohemian style)",
+  "pairsWith": "fixtures/mismatched-boho.json",
+  "azureRaw": {
+    "tags": [
+      { "name": "person", "confidence": 0.99 },
+      { "name": "clothing", "confidence": 0.95 },
+      { "name": "leggings", "confidence": 0.92 },
+      { "name": "tank top", "confidence": 0.9 },
+      { "name": "running shoes", "confidence": 0.88 },
+      { "name": "athletic", "confidence": 0.85 },
+      { "name": "fitness", "confidence": 0.82 },
+      { "name": "indoor", "confidence": 0.86 },
+      { "name": "exercising", "confidence": 0.78 },
+      { "name": "young", "confidence": 0.72 }
+    ],
+    "objects": [
+      { "object": "leggings", "confidence": 0.93 },
+      { "object": "tank top", "confidence": 0.91 }
+    ],
+    "description": {
+      "tags": ["person", "indoor", "athletic", "fitness", "leggings"],
+      "captions": [
+        { "text": "a person in athletic wear indoors", "confidence": 0.83 }
+      ]
+    },
+    "color": {
+      "dominantColors": ["Pink", "Grey"],
+      "dominantColorForeground": "Pink",
+      "dominantColorBackground": "Grey",
+      "accentColor": "F5F5F5",
+      "isBwImg": false
+    }
+  },
+  "response": {
+    "tags": [
+      { "name": "leggings", "confidence": 0.93, "category": "clothing" },
+      { "name": "tank top", "confidence": 0.91, "category": "clothing" },
+      { "name": "running shoes", "confidence": 0.88, "category": "footwear" }
+    ],
+    "colors": [
+      { "name": "pink", "hex": "#FFB6C1", "dominance": 0.45 },
+      { "name": "grey", "hex": "#808080", "dominance": 0.45 },
+      { "name": "accent", "hex": "#F5F5F5", "dominance": 0.1 }
+    ],
+    "dominantColor": "pink",
+    "rawTags": ["person", "clothing", "leggings", "tank top", "running shoes", "athletic", "fitness", "indoor", "exercising", "young", "person", "indoor", "athletic", "fitness", "leggings"]
+  },
+  "notes": "Pure clothing detection — no accessories. 'athletic/fitness/exercising' filtered (not in taxonomy). Designed to test P3's style-mismatch path: user claims bohemian, output is clearly sporty."
+}

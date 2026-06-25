@@ -1,35 +1,73 @@
 /** POST /api/analyze
- *  P2 owns this — Azure Vision integration
- *  Takes: FormData with image file
- *  Returns: AnalyzeResponse (tags, colors, dominantColor)
+ *  P2 — Azure Vision integration.
+ *
+ *  Request:  multipart/form-data with field "image" (JPEG/PNG/WebP/HEIC, ≤10MB)
+ *  Response: AnalyzeResponse (200) or { error } (4xx)
+ *
+ *  Demo safety: when Azure is missing, times out, or returns no clothing,
+ *  responds 200 with FALLBACK_RESPONSE and sets X-StyleSync-Fallback header
+ *  so the UI never crashes mid-demo. The reason is logged server-side.
  */
 
 import { NextResponse } from "next/server";
 import type { AnalyzeResponse } from "@/types";
+import { analyzeImage, FALLBACK_RESPONSE, VisionError } from "@/lib/vision";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export async function POST() {
-  // TODO (P2): Implement Azure Vision integration
-  // 1. Read FormData image from request
-  // 2. Send to Azure AI Vision API
-  // 3. Filter tags by confidence >= 0.7
-  // 4. Map Azure color names to HEX
-  // 5. Return AnalyzeResponse
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+const ACCEPTED_MIME = /^image\/(jpeg|jpg|png|webp|heic|heif)$/i;
 
-  const placeholder: AnalyzeResponse = {
-    tags: [
-      { name: "blazer", confidence: 0.92, category: "clothing" },
-      { name: "jeans", confidence: 0.88, category: "clothing" },
-      { name: "sneakers", confidence: 0.85, category: "footwear" },
-    ],
-    colors: [
-      { name: "navy", hex: "#000080", dominance: 0.4 },
-      { name: "blue", hex: "#0000FF", dominance: 0.35 },
-      { name: "white", hex: "#FFFFFF", dominance: 0.25 },
-    ],
-    dominantColor: "navy",
-    rawTags: ["blazer", "jeans", "sneakers", "person", "indoor"],
-  };
+export async function POST(req: Request): Promise<NextResponse> {
+  let image: ArrayBuffer;
+  try {
+    const formData = await req.formData();
+    const file = formData.get("image");
 
-  return NextResponse.json(placeholder);
+    if (!(file instanceof File)) {
+      return NextResponse.json(
+        { error: "Missing 'image' field in FormData" },
+        { status: 400 },
+      );
+    }
+    if (!ACCEPTED_MIME.test(file.type)) {
+      return NextResponse.json(
+        { error: `Unsupported image type: ${file.type || "unknown"}` },
+        { status: 415 },
+      );
+    }
+    if (file.size > MAX_IMAGE_BYTES) {
+      return NextResponse.json(
+        {
+          error: `Image too large (${file.size} bytes, max ${MAX_IMAGE_BYTES})`,
+        },
+        { status: 413 },
+      );
+    }
+
+    image = await file.arrayBuffer();
+  } catch {
+    return NextResponse.json(
+      {
+        error:
+          "Invalid request body — expected multipart/form-data with 'image' field",
+      },
+      { status: 400 },
+    );
+  }
+
+  try {
+    const result = await analyzeImage(image);
+    return NextResponse.json<AnalyzeResponse>(result);
+  } catch (e) {
+    const code =
+      e instanceof VisionError ? e.code : "unknown";
+    const message = e instanceof Error ? e.message : String(e);
+    console.error(`[/api/analyze] fallback (${code}): ${message}`);
+    const fallback: AnalyzeResponse = {
+      ...FALLBACK_RESPONSE,
+      rawTags: [`fallback:${code}`],
+    };
+    return NextResponse.json<AnalyzeResponse>(fallback, {
+      headers: { "X-StyleSync-Fallback": code },
+    });
+  }
 }

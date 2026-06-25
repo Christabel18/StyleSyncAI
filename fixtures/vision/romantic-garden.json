@@ -1,0 +1,53 @@
+{
+  "name": "Romantic Garden Party",
+  "imageHint": "Person in pink floral dress, cream heels, pearl necklace — garden setting with flowers",
+  "pairsWith": "fixtures/romantic-garden.json",
+  "azureRaw": {
+    "tags": [
+      { "name": "person", "confidence": 0.99 },
+      { "name": "woman", "confidence": 0.97 },
+      { "name": "clothing", "confidence": 0.96 },
+      { "name": "dress", "confidence": 0.94 },
+      { "name": "heels", "confidence": 0.89 },
+      { "name": "pearl necklace", "confidence": 0.82 },
+      { "name": "floral pattern", "confidence": 0.76 },
+      { "name": "outdoor", "confidence": 0.88 },
+      { "name": "garden", "confidence": 0.85 },
+      { "name": "flowers", "confidence": 0.79 },
+      { "name": "smiling", "confidence": 0.81 }
+    ],
+    "objects": [
+      { "object": "dress", "confidence": 0.94 },
+      { "object": "heels", "confidence": 0.9 }
+    ],
+    "description": {
+      "tags": ["person", "woman", "dress", "outdoor", "garden", "flowers"],
+      "captions": [
+        { "text": "a woman in a pink floral dress in a garden", "confidence": 0.88 }
+      ]
+    },
+    "color": {
+      "dominantColors": ["Pink", "White"],
+      "dominantColorForeground": "Pink",
+      "dominantColorBackground": "White",
+      "accentColor": "FFD700",
+      "isBwImg": false
+    }
+  },
+  "response": {
+    "tags": [
+      { "name": "dress", "confidence": 0.94, "category": "clothing" },
+      { "name": "heels", "confidence": 0.9, "category": "footwear" },
+      { "name": "pearl necklace", "confidence": 0.82, "category": "accessory" },
+      { "name": "floral pattern", "confidence": 0.76, "category": "other" }
+    ],
+    "colors": [
+      { "name": "pink", "hex": "#FFB6C1", "dominance": 0.45 },
+      { "name": "white", "hex": "#FFFFFF", "dominance": 0.45 },
+      { "name": "accent", "hex": "#FFD700", "dominance": 0.1 }
+    ],
+    "dominantColor": "pink",
+    "rawTags": ["person", "woman", "clothing", "dress", "heels", "pearl necklace", "floral pattern", "outdoor", "garden", "flowers", "smiling", "person", "woman", "dress", "outdoor", "garden", "flowers"]
+  },
+  "notes": "Floral pattern preserved as 'other' category — used by P3 for romantic style match. Gold accent represents jewelry highlights. Garden/flowers/woman filtered."
+}

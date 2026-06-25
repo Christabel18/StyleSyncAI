@@ -1,0 +1,53 @@
+{
+  "name": "Classic Blazer Look",
+  "imageHint": "Person in navy blazer, beige chinos, brown loafers, watch, belt — indoor setting",
+  "pairsWith": "fixtures/classic-blazer.json",
+  "azureRaw": {
+    "tags": [
+      { "name": "person", "confidence": 0.99 },
+      { "name": "clothing", "confidence": 0.97 },
+      { "name": "blazer", "confidence": 0.95 },
+      { "name": "chinos", "confidence": 0.9 },
+      { "name": "loafers", "confidence": 0.88 },
+      { "name": "watch", "confidence": 0.82 },
+      { "name": "belt", "confidence": 0.8 },
+      { "name": "indoor", "confidence": 0.91 },
+      { "name": "smiling", "confidence": 0.75 },
+      { "name": "professional", "confidence": 0.68 }
+    ],
+    "objects": [
+      { "object": "blazer", "confidence": 0.95 },
+      { "object": "watch", "confidence": 0.83 }
+    ],
+    "description": {
+      "tags": ["person", "indoor", "blazer", "professional"],
+      "captions": [
+        { "text": "a person wearing a navy blazer and chinos posing indoors", "confidence": 0.84 }
+      ]
+    },
+    "color": {
+      "dominantColors": ["Brown", "Black"],
+      "dominantColorForeground": "Brown",
+      "dominantColorBackground": "Black",
+      "accentColor": "1F2D5A",
+      "isBwImg": false
+    }
+  },
+  "response": {
+    "tags": [
+      { "name": "blazer", "confidence": 0.95, "category": "clothing" },
+      { "name": "chinos", "confidence": 0.9, "category": "clothing" },
+      { "name": "loafers", "confidence": 0.88, "category": "footwear" },
+      { "name": "watch", "confidence": 0.83, "category": "accessory" },
+      { "name": "belt", "confidence": 0.8, "category": "accessory" }
+    ],
+    "colors": [
+      { "name": "brown", "hex": "#8B4513", "dominance": 0.45 },
+      { "name": "black", "hex": "#000000", "dominance": 0.45 },
+      { "name": "accent", "hex": "#1F2D5A", "dominance": 0.1 }
+    ],
+    "dominantColor": "brown",
+    "rawTags": ["person", "clothing", "blazer", "chinos", "loafers", "watch", "belt", "indoor", "smiling", "professional", "person", "indoor", "blazer", "professional"]
+  },
+  "notes": "Confidence below 0.7 (professional=0.68) gets dropped. Navy accent represents the blazer color. 'professional' is in rawTags but not in classified tags."
+}

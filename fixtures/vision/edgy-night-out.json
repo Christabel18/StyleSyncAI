@@ -1,0 +1,52 @@
+{
+  "name": "Edgy Night Out",
+  "imageHint": "Person in black leather jacket, black jeans, combat boots, silver chains — moody low-light",
+  "pairsWith": "fixtures/edgy-night-out.json",
+  "azureRaw": {
+    "tags": [
+      { "name": "person", "confidence": 0.98 },
+      { "name": "clothing", "confidence": 0.97 },
+      { "name": "leather jacket", "confidence": 0.96 },
+      { "name": "boots", "confidence": 0.93 },
+      { "name": "black jeans", "confidence": 0.91 },
+      { "name": "chains", "confidence": 0.8 },
+      { "name": "leather", "confidence": 0.92 },
+      { "name": "night", "confidence": 0.79 },
+      { "name": "dark", "confidence": 0.83 },
+      { "name": "posing", "confidence": 0.74 }
+    ],
+    "objects": [
+      { "object": "leather jacket", "confidence": 0.96 },
+      { "object": "boots", "confidence": 0.94 }
+    ],
+    "description": {
+      "tags": ["person", "leather", "dark", "night", "jacket"],
+      "captions": [
+        { "text": "a person in a black leather jacket and boots at night", "confidence": 0.81 }
+      ]
+    },
+    "color": {
+      "dominantColors": ["Black"],
+      "dominantColorForeground": "Black",
+      "dominantColorBackground": "Black",
+      "accentColor": "8B0000",
+      "isBwImg": false
+    }
+  },
+  "response": {
+    "tags": [
+      { "name": "leather jacket", "confidence": 0.96, "category": "clothing" },
+      { "name": "boots", "confidence": 0.94, "category": "footwear" },
+      { "name": "leather", "confidence": 0.92, "category": "other" },
+      { "name": "black jeans", "confidence": 0.91, "category": "clothing" },
+      { "name": "chains", "confidence": 0.8, "category": "accessory" }
+    ],
+    "colors": [
+      { "name": "black", "hex": "#000000", "dominance": 0.9 },
+      { "name": "accent", "hex": "#8B0000", "dominance": 0.1 }
+    ],
+    "dominantColor": "black",
+    "rawTags": ["person", "clothing", "leather jacket", "boots", "black jeans", "chains", "leather", "night", "dark", "posing", "person", "leather", "dark", "night", "jacket"]
+  },
+  "notes": "Single dominant color case. Red accent (8B0000) maps the chains/highlights. 'leather' classified as 'other' (material tag). 'posing/night/dark' filtered out."
+}
