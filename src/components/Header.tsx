@@ -6,9 +6,9 @@ import { Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { href: "/onboarding", label: "Discover ✦" },
-  { href: "/upload", label: "Analyze 📸" },
-  { href: "/history", label: "My Fits 👗" },
+  { href: "/onboarding", label: "Discover" },
+  { href: "/upload", label: "Analyze" },
+  { href: "/history", label: "My Fits" },
 ];
 
 export function Header() {
@@ -20,7 +20,7 @@ export function Header() {
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-ink text-cream transition-all group-hover:rotate-12 group-hover:bg-pop-purple">
             <Sparkles className="h-4 w-4" />
           </span>
-          <span className="text-lg font-black tracking-tight text-ink">
+          <span className="text-lg font-semibold tracking-tight text-ink">
             Style<span className="gradient-text">Sync</span> AI
           </span>
         </Link>

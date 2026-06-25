@@ -72,7 +72,7 @@ export function StyleSelector({
               </div>
 
               <h3 className={cn(
-                "text-lg font-black",
+                "text-lg font-semibold",
                 selected ? "text-white" : "text-ink",
               )}>
                 {style.name}

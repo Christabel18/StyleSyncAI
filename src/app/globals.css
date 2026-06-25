@@ -16,7 +16,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-::selection { background: #9b5de5; color: #fff; }
+::selection { background: #b45f45; color: #fff; }
 
 /* ── Fun gradient text ── */
 .gradient-text {
