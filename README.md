@@ -1,4 +1,4 @@
-# 👗 StyleSync AI
+# 👗 Outfitted
 
 AI-powered style analysis — upload outfit photos, get scored recommendations and personalized fashion advice from AI assistants.
 
