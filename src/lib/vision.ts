@@ -422,6 +422,47 @@ export function parseAzureResponse(raw: AzureVisionRaw): AnalyzeResponse & { sty
     );
   }
 
+  // ── Deduplication: remove generic terms when a specific synonym exists ──────
+  // e.g. if "jeans" is present, drop "trousers" (same garment, less specific)
+  // Groups: if ANY specific term in a group is present, drop all generic terms.
+  const GENERIC_GROUPS: Array<{ specific: string[]; generic: string[] }> = [
+    {
+      specific: ["jeans", "black jeans", "denim"],
+      generic: ["trousers", "pants", "slacks"],
+    },
+    {
+      specific: ["cargo pants", "joggers", "sweatpants", "leggings", "shorts", "chinos", "khakis"],
+      generic: ["trousers", "pants"],
+    },
+    {
+      specific: ["sneakers", "trainers", "boots", "loafers", "heels", "sandals", "flats", "mules"],
+      generic: ["footwear", "shoes"],
+    },
+    {
+      specific: ["hoodie", "sweatshirt", "blazer", "jacket", "coat", "vest", "cardigan", "sweater"],
+      generic: ["outerwear", "top"],
+    },
+    {
+      specific: ["crop top", "tank top", "t-shirt", "blouse", "shirt", "polo"],
+      generic: ["top", "casual dress"],
+    },
+    {
+      specific: ["leather jacket", "denim jacket", "bomber jacket", "field jacket"],
+      generic: ["jacket", "coat", "outerwear"],
+    },
+  ];
+
+  const tagNames = new Set(Array.from(seen.keys()));
+  for (const group of GENERIC_GROUPS) {
+    const hasSpecific = group.specific.some(s => tagNames.has(s));
+    if (hasSpecific) {
+      for (const g of group.generic) {
+        seen.delete(g);
+        tagNames.delete(g);
+      }
+    }
+  }
+
   // 3. Footwear normalisation (fix "high heels" → "shoes" when context says flat)
   const captionText = (raw.description?.captions ?? []).map((c) => c.text).join(" ");
   const rawTagNames = [

@@ -8,6 +8,7 @@ const STYLE_ITEMS: Record<StyleVibe, string[]> = {
   streetwear: [
     "hoodie", "sneakers", "cap", "joggers", "t-shirt", "jacket", "backpack",
     "graphic", "cargo", "oversized", "tracksuit", "sweatshirt", "air force",
+    "hoodie jacket", "zip hoodie", "pullover hoodie",
   ],
   minimalist: [
     // Tops — Azure often returns these for simple fitted tops
@@ -174,7 +175,7 @@ export function calculateScore(tags: OutfitTag[], colors: OutfitColor[], userSty
 /** Better recommendation reason strings — no "swap X for a X" nonsense. */
 const SWAP_SUGGESTIONS: Partial<Record<StyleVibe, string>> = {
   minimalist: "a clean, simple piece in a neutral tone",
-  streetwear: "an oversized or graphic streetwear piece",
+  streetwear: "a hoodie, graphic tee, or statement jacket",
   classic: "a tailored classic piece like a blazer or oxford shirt",
   edgy: "something with leather, hardware, or dark tones",
   sporty: "an athletic or performance piece",

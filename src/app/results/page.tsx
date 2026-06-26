@@ -153,6 +153,12 @@ export default function ResultsPage() {
           Analyze another
         </Link>
         <Link
+          href="/shop"
+          className="btn-shimmer inline-flex h-12 items-center gap-2 rounded-full px-7 text-base font-semibold transition-transform hover:scale-105"
+        >
+          🛍️ Shop your stylist&apos;s pick
+        </Link>
+        <Link
           href="/history"
           className="inline-flex h-12 items-center gap-2 rounded-full border border-line px-7 text-base font-semibold text-ink transition-colors hover:border-clay hover:text-clay"
         >
