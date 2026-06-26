@@ -21,7 +21,7 @@ export function Header() {
             <Sparkles className="h-5 w-5" />
           </span>
           <span className="text-2xl font-semibold tracking-tight text-ink">
-            Style<span className="gradient-text">Sync</span> AI
+            Out<span className="gradient-text">Fit</span>ted
           </span>
         </Link>
 

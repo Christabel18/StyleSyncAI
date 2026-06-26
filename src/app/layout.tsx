@@ -19,9 +19,9 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "StyleSync AI — Your personal AI stylist",
+  title: "OutFitted — Your personal AI stylist",
   description:
-    "StyleSync AI analyzes your outfit, learns your style, and gives you personalized styling advice from your dedicated AI stylist.",
+    "OutFitted analyzes your outfit, learns your style, and gives you personalized styling advice from your dedicated AI stylist.",
 };
 
 export default function RootLayout({

@@ -13,7 +13,7 @@
 
 import type { AnalyzeResponse, OutfitTag, OutfitColor } from "@/types";
 import { colorNameToHex, normalizeHex } from "./colorMap";
-import { classifyTag } from "./taxonomy";
+import { classifyTag, BODY_PART_INFERENCES, STYLE_SIGNAL_TAGS } from "./taxonomy";
 
 const CONFIDENCE_THRESHOLD = 0.6;
 const TIMEOUT_MS = 30_000;
@@ -347,13 +347,30 @@ async function callAzureVision(image: ArrayBuffer): Promise<AzureVisionRaw> {
 }
 
 /** Pure mapping from Azure raw → AnalyzeResponse. Exported for testing. */
-export function parseAzureResponse(raw: AzureVisionRaw): AnalyzeResponse {
+export function parseAzureResponse(raw: AzureVisionRaw): AnalyzeResponse & { styleSignals: string[] } {
   const seen = new Map<string, OutfitTag>();
 
   // 1. Seed from Azure tags + objects
   const candidates: { name: string; confidence: number }[] = [];
   for (const t of raw.tags ?? []) candidates.push({ name: t.name, confidence: t.confidence });
   for (const o of raw.objects ?? []) candidates.push({ name: o.object, confidence: o.confidence });
+
+  // ── FIX 3: Also mine description.tags (separate from description.captions)
+  // These are often more specific than main tags (e.g. "jacket" appears here)
+  for (const t of raw.description?.tags ?? []) {
+    candidates.push({ name: t, confidence: 0.72 }); // description tags have no confidence score
+  }
+
+  // Collect style signal tags before filtering
+  const styleSignals: string[] = [];
+  for (const c of [...(raw.tags ?? [])]) {
+    const n = c.name.toLowerCase().trim();
+    for (const [style, signals] of Object.entries(STYLE_SIGNAL_TAGS)) {
+      if (signals.some(s => n.includes(s)) && c.confidence >= 0.8) {
+        if (!styleSignals.includes(style)) styleSignals.push(style);
+      }
+    }
+  }
 
   for (const c of candidates) {
     const name = c.name.toLowerCase().trim();
@@ -373,6 +390,28 @@ export function parseAzureResponse(raw: AzureVisionRaw): AnalyzeResponse {
     const existing = seen.get(ct.name);
     if (!existing) {
       seen.set(ct.name, { name: ct.name, confidence: ct.confidence, category: ct.category });
+    }
+  }
+
+  // ── FIX 1: Body-part exposure inference
+  // If Azure detected "waist" at high confidence, the crop top is likely visible.
+  // If Azure detected "shoulder" and no top is in seen yet, infer sleeveless top.
+  for (const t of raw.tags ?? []) {
+    const n = t.name.toLowerCase().trim();
+    const inference = BODY_PART_INFERENCES[n];
+    if (!inference) continue;
+    if (t.confidence < 0.85) continue; // only high-confidence body-part tags
+
+    // Only add inferred item if we don't already have a more specific top
+    const hasTop = Array.from(seen.values()).some(
+      (tag) => tag.category === "clothing" && !["trousers", "jeans", "pants", "shorts", "skirt"].some(b => tag.name.includes(b))
+    );
+    if (!hasTop) {
+      seen.set(inference.name, {
+        name: inference.name,
+        confidence: inference.confidence,
+        category: inference.category,
+      });
     }
   }
 
@@ -396,7 +435,7 @@ export function parseAzureResponse(raw: AzureVisionRaw): AnalyzeResponse {
   // 4. Build colours with background-skew correction
   const { colors, dominantColor } = buildColours(raw);
 
-  return { tags, colors, dominantColor, rawTags: rawTagNames };
+  return { tags, colors, dominantColor, rawTags: rawTagNames, styleSignals };
 }
 
 /** Demo-safe fallback. Returned by the route when Azure is missing or fails. */

@@ -60,7 +60,7 @@ export const useAppStore = create<AppState>()(
       clearHistory: () => set({ history: [] }),
     }),
     {
-      name: "stylesync-v1",
+      name: "outfitted-v1",
       // only persist preferences + history; skip runtime state
       partialize: (state) => ({
         selectedStyle: state.selectedStyle,
