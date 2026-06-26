@@ -52,7 +52,7 @@ export default function Home() {
             </h1>
 
             <p className="mt-6 max-w-md text-xl leading-relaxed text-ink-soft">
-              StyleSync AI understands your wardrobe, learns your taste, and
+              OutFitted understands your wardrobe, learns your taste, and
               helps you build outfits with confidence — one look at a time.
             </p>
 
@@ -243,7 +243,7 @@ export default function Home() {
 
       <footer className="border-t border-line py-8">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-5 text-sm text-muted sm:flex-row sm:px-8">
-          <p>StyleSync AI — HackyGirls for the Win</p>
+          <p>OutFitted — HackyGirls for the Win</p>
           <p>Your personal stylist, powered by AI.</p>
         </div>
       </footer>

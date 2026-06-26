@@ -15,8 +15,8 @@ import type { RecommendRequest, RecommendResponse } from "@/types";
 
 export async function POST(request: NextRequest) {
   try {
-    const body: RecommendRequest = await request.json();
-    const { tags, colors, userStyle, assistant } = body;
+    const body = await request.json() as RecommendRequest & { styleSignals?: string[] };
+    const { tags, colors, userStyle, assistant, styleSignals } = body;
 
     if (!tags || !colors || !userStyle || !assistant) {
       return NextResponse.json(
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     }
 
     // ── Step 1: Rule-based scoring (instant) ──
-    const score = calculateScore(tags, colors, userStyle);
+    const score = calculateScore(tags, colors, userStyle, styleSignals);
 
     // ── Step 2: Rule-based recommendations (instant) ──
     const ruleRecs = fallbackRec(tags, colors, userStyle);

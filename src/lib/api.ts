@@ -6,7 +6,6 @@ import type {
   StyleVibe,
   AssistantName,
   AnalyzeResponse,
-  RecommendRequest,
   RecommendResponse,
 } from "@/types";
 import { mockAnalyze, mockRecommend } from "@/lib/mockSession";
@@ -47,12 +46,13 @@ export async function getRecommendations(
 ): Promise<RecommendResponse> {
   if (MOCK_MODE) return mockRecommend(analysis, style, assistant);
 
-  const body: RecommendRequest = {
+  const body = {
     tags: analysis.tags,
     colors: analysis.colors,
     dominantColor: analysis.dominantColor,
     userStyle: style,
     assistant,
+    styleSignals: analysis.styleSignals ?? [],
   };
   const res = await fetch("/api/recommend", {
     method: "POST",

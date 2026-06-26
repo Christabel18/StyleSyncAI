@@ -35,6 +35,7 @@ export interface AnalyzeResponse {
   colors: OutfitColor[];
   dominantColor: string;
   rawTags: string[]; // all Azure Vision tags for debugging
+  styleSignals?: string[]; // style vibes detected from Azure signal tags (e.g. "streetwear")
 }
 
 // ─── Recommendations (P3 output) ───
